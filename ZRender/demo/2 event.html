@@ -1,0 +1,122 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>ZRender 事件</title>
+    <script src="../lib/zrender.js"></script>
+</head>
+<body>
+
+<style>
+    #main {
+        width: 800px;
+        height: 400px;
+        border: 1px solid #666;
+    }
+</style>
+<div>
+    <p>ZRender事件</p>
+</div>
+<div id="main"></div>
+
+<div>
+    <p>折线的事件只在折线上</p>
+    <p>多边形的事件范围取决与是否有fill，fill='none'时，事件只在线上，fill有色值时作用在整个多边形上</p>
+    <p>通过设置 event.cancelBubble = true 取消事件冒泡</p>
+</div>
+<script>
+    let zr = zrender.init(document.getElementById('main'), {
+        renderer:'canvas'
+    });
+
+    //添加一个圆形
+    let circle = new zrender.Circle({
+        shape: {
+            cx: 360,
+            cy: 200,
+            r: 40
+        },
+        style: {
+            fill: '#FF904F',
+            stroke: 'none'
+        }
+    });
+    zr.add(circle);
+
+    // 添加一个矩形
+    let rect = new zrender.Rect({
+        shape:{
+            x: 420,
+            y:160,
+            width:80,
+            height:80
+        },
+        style:{
+            fill: 'blue',
+        }
+    })
+    zr.add(rect)
+
+    //添加一个polyline
+    let polyline = new zrender.Polyline({
+        shape:{
+            points:[[100,50],[300,50],[250,100]]
+        },
+        style:{
+            lineWidth: 10,
+        }
+    })
+    zr.add(polyline)
+
+    //添加一个polyline
+    let polygon = new zrender.Polygon({
+        shape:{
+            points:[[400,50],[500,50],[450,100]]
+        },
+        style:{
+            fill: 'rgba(50,255,20,0.5)',
+            lineWidth: 10,
+            stroke: '#FF904F',
+        }
+    })
+    zr.add(polygon)
+
+    circle.on('click', function (event){
+        //取消冒泡
+        event.cancelBubble = true
+        alert("点击圆形")
+    })
+
+    rect.on('mouseover',function (){
+        rect.attr({
+            style:{
+                fill: 'red'
+            }
+        })
+    })
+    rect.on('mouseout',function (){
+        rect.attr({
+            style:{
+                fill: 'blue'
+            }
+        })
+    })
+
+    polyline.on('click', function (){
+        alert("点击polyline")
+    })
+
+    polygon.on('click', function (){
+        alert("点击polygon")
+    })
+    zr.on('click', function (){
+        alert("点击画布")
+    })
+
+    console.log(circle)
+    console.log(zr)
+
+</script>
+
+</body>
+</html>
