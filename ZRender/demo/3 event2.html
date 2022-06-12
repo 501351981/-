@@ -1,0 +1,98 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>ZRender 事件</title>
+    <script src="../lib/zrender.js"></script>
+</head>
+<body>
+
+<style>
+    #main {
+        width: 800px;
+        height: 400px;
+        border: 1px solid #666;
+    }
+</style>
+<div>
+    <p>ZRender事件: 拖动元素运动</p>
+</div>
+<div id="main"></div>
+
+<div>
+    <p>拖拽元素在画布上运动</p>
+    <p>监听元素的mousedown事件，在mousedown事件中监听mousemove事件</p>
+    <p>在mousemove事件中计算位移，修改元素的position属性</p>
+</div>
+<script>
+    let zr = window.zr = zrender.init(document.getElementById('main'), {
+        renderer:'canvas'
+    });
+
+    //添加一个圆形
+    let circle = new zrender.Circle({
+        shape: {
+            cx: 360,
+            cy: 200,
+            r: 40
+        },
+        style: {
+            fill: '#FF904F',
+            stroke: 'none'
+        }
+    });
+    zr.add(circle);
+
+    // 添加一个矩形
+    let rect = window.rect = new zrender.Rect({
+        shape:{
+            x: 420,
+            y:160,
+            width:80,
+            height:80
+        },
+        style:{
+            fill: 'blue',
+        },
+        position:[100,0]
+    })
+    zr.add(rect)
+
+    let instance = null
+    let oldX,oldY
+    [rect,circle].forEach(shape => {
+        shape.on('mousedown', function (event){
+            instance = shape
+            oldX = event.offsetX
+            oldY = event.offsetY
+
+            zr.on('mousemove', mousemoveHandle)
+            zr.on('mouseup',endHandle)
+        })
+    })
+
+    function endHandle (event){
+        zr.off('mousemove', mousemoveHandle)
+        zr.off('mouseup',endHandle)
+        instance = null
+    }
+    function mousemoveHandle (event){
+        if (instance){
+            let dx = event.offsetX - oldX
+            let dy = event.offsetY - oldY
+            let x = instance.position[0] + dx
+            let y = instance.position[1] + dy
+            // instance.position = [x,y]
+            // instance.setPosition(x,y)
+            instance.attr('position',[x,y])
+            oldX = event.offsetX
+            oldY = event.offsetY
+        }
+    }
+
+
+
+</script>
+
+</body>
+</html>
