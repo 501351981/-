@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Clip</title>
+</head>
+<body>
+<canvas id="canvas"></canvas>
+
+<script>
+    let canvas = document.getElementById('canvas')
+    let ctx = canvas.getContext('2d')
+    let width = 300
+    let height = 300
+    let devicePixelRatio = window.devicePixelRatio
+    canvas.style.width = `${width}px`
+    canvas.style.height = `${height}px`
+    canvas.setAttribute('width', width * devicePixelRatio)
+    canvas.setAttribute('height', height * devicePixelRatio)
+
+    ctx.fillRect(0,0,width*2,height*2)
+
+    //save一下，后面不需要使用clip的时候restore出来
+    ctx.save()
+
+    ctx.beginPath();
+    ctx.arc(width,height,width/2,0,Math.PI*2,true);
+    ctx.clip();
+
+    ctx.fillStyle = '#f00'
+    ctx.fill()
+
+    ctx.beginPath();
+    //clip并不影响原有的坐标系统，还按之前的坐标系统计算位置
+    //目前继续收到clip影响
+    ctx.arc(width/2,height,width/2,0,Math.PI*2,true);
+    ctx.fillStyle = '#0f0'
+    ctx.fill()
+
+
+    ctx.restore()
+    ctx.beginPath();
+    ctx.arc(width*3/2,height,width/2,0,Math.PI*2,true);
+    ctx.fillStyle = '#00f'
+    ctx.fill()
+
+
+
+
+
+</script>
+</body>
+</html>
