@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>判断在当前路径中是否包含检测点</title>
+</head>
+<body>
+<style>
+    #canvas{
+        border: 1px solid #eee;
+    }
+</style>
+<p>isPointInPath(x, y, fillRule):点是否在路径及描边上</p>
+<p>isPointInStroke(x,y)：点是否在路径的描边线</p>
+<canvas id="canvas" width="300" height="300"></canvas>
+
+<script>
+    let ctx = document.getElementById('canvas').getContext('2d')
+    ctx.fillStyle = '#ff0'
+    ctx.strokeStyle = '#0ff'
+    ctx.beginPath()
+    ctx.rect(100,100,100,100)
+    ctx.stroke()
+    ctx.fill()
+    console.log(ctx.isPointInPath(100,100))  //true
+    console.log(ctx.isPointInPath(150,150))  //true
+    console.log(ctx.isPointInPath(90,150))   //false
+    ctx.closePath()
+
+    ctx.fillStyle = '#f00'
+    ctx.beginPath()
+    ctx.arc(100,100,2,0,Math.PI*2)
+    ctx.fill()
+    ctx.closePath()
+
+    ctx.beginPath()
+    ctx.arc(150,150,2,0,Math.PI*2)
+    ctx.fill()
+    ctx.closePath()
+
+    ctx.beginPath()
+    ctx.arc(90,150,2,0,Math.PI*2)
+    ctx.fill()
+    ctx.closePath()
+
+    console.log(ctx.isPointInPath(100,100))  //false
+    console.log(ctx.isPointInPath(150,150))  //false
+    console.log(ctx.isPointInPath(90,150))   //true
+
+    ctx.save()
+    ctx.translate(50,0)
+    ctx.rect(100,0,100,100)
+    ctx.stroke()
+    console.log(ctx.isPointInPath(149,50))  //false，相对的是原始坐标轴，不是转换后的坐标轴
+    console.log(ctx.isPointInPath(150,50))  //true
+    ctx.fill()
+    ctx.restore()
+
+    console.log(ctx.isPointInPath(90,147))  //false ，由于restore了， 目前的判断基于上一个path， ctx.arc(90,150,2,0,Math.PI*2)
+    console.log(ctx.isPointInPath(90,150))  //true
+    console.log(ctx.isPointInPath(150,150))  //false，过往路径是有的，但是判断的是基于当前path
+</script>
+</body>
+</html>
